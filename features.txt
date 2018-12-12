@@ -1,0 +1,17 @@
+-Datum Zeit Stand
+Datum Zeit Erstveröffentlichung
++Author
++Studio
+-Titel
+-SubTitel - Dachzeile
+-Kabitel Überschriften
+-Anzahl Kapitel
+InfoText
+Schlagwörter
+Geoschlagwörter
+-Rubrik
+Anzahl Wörter
+Anzahl Bilder
+-Browsertitel
+Plain_Text
+Verlinkungen in andere Artikeln

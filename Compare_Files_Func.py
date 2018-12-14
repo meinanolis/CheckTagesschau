@@ -2,6 +2,16 @@ import glob
 import os
 from bs4 import BeautifulSoup
 import difflib
+import MySQLdb
+import numpy as np
+
+connection = MySQLdb.connect(
+     host="192.168.2.3",
+     port=3307,
+     db="Tagesschau",
+     user="Tagesschau", passwd="g00gle"
+    )
+
 
 def Compare(path,name,version1,version2):
     textbausteine1=get_Textbausteine(path,name,version1)
@@ -36,8 +46,40 @@ def get_Textbausteine(path,name,version):
     textbausteine=[t.text for t in textbausteine]+[h.text for h in h2s]+[browsertitle,headline,dachzeile,stand]
     return textbausteine
 
+
+def sync_Uebersicht_und_Vergleich():
+    c=connection.cursor()
+
+    c.execute('SELECT `ID` FROM `Vergleich`')
+    table_rows = c.fetchall()
+    table_rows=list(table_rows)
+    all_ID_in_Vergleich=[]
+    for row in table_rows:
+        ID=row[0]
+        all_ID_in_Vergleich.append(ID)
+    all_ID_in_Vergleich=np.array(all_ID_in_Vergleich)
+
+    c.execute('SELECT `ID`,`Name` FROM `Uebersicht`')
+    table_rows = c.fetchall()
+    table_rows=list(table_rows)
+    for row in table_rows:
+        ID, name=row
+        if ID not in all_ID_in_Vergleich:
+            print(name)
+            c.execute("INSERT INTO `Vergleich` (`ID`, `Name`) VALUES ('"+str(ID)+"', '"+name+"');")
+            connection.commit()
+
+
+
+
 path='2018-11/20-jahre-iss-101.html'
 name='20-jahre-iss-101.html'
 version1=0
 version2=1
-Compare(path,name,version1,version2)
+#sync_Uebersicht_und_Vergleich()
+c=connection.cursor()
+c.execute('SELECT ID FROM Vergleich WHERE `Vergleich`.`1-2` IS NULL')
+table_rows = c.fetchall()
+table_rows=list(table_rows)
+#Compare(path,name,version1,version2)
+

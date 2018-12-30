@@ -12,15 +12,13 @@ f.close()
 soupe=BeautifulSoup(sauce, 'lxml')
 body=soupe.body
 content=body.find(id='content')
-h1=content.h1
-stand=content.find('span', class_='stand')
-section=content.find('div',class_='sectionZ').find('div',class_='modParagraph')
-
 contentlist=[]
-
+h1=content.h1
 contentlist.append(h1)
+stand=content.find('span', class_='stand')
 contentlist.append(stand)
 
+section=content.find('div',class_='sectionZ').find('div',class_='modParagraph')
 for child in section.contents:
 	if 'class="text small' in str(child):
 		contentlist.append(child)

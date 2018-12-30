@@ -2,112 +2,127 @@ import glob
 import os
 from bs4 import BeautifulSoup
 import difflib
-import webbrowser
 import MySQLdb
-
-os.chdir('//RASPBERRYPI/PiShare/CheckTagesschau/sharefolder/')
+import numpy as np
+import webbrowser
+import os.path
 
 connection = MySQLdb.connect(
-     host="192.168.2.100",
+     host="192.168.2.3",
      port=3307,
      db="Tagesschau",
      user="Tagesschau", passwd="g00gle"
     )
 
-c=connection.cursor()
 
-for wdh in [1,2,3,4,5]:
+def Compare(path,name,version1,version2):
+    textbausteine1=get_Textbausteine(path,name,version1)
+    textbausteine2=get_Textbausteine(path,name,version2)
+    t1=[t.text for t in textbausteine1]
+    t2=[t.text for t in textbausteine2]
+    idiff=0
+    for d in difflib.context_diff(t1,t2,n=0):
+        #print(d)
+        idiff+=1
+    print(idiff, name)
+    if idiff:
+        html = difflib.HtmlDiff().make_table(fromlines=t1,tolines=t2)
+        soup=BeautifulSoup(html)
+        #soup.find('span', class_='diff_chg')['color']='red'
+        soup.find('table')['width']='1000'
+        soup.find('table')['cellspacing']='10'
+        soup.find('table')['cellpadding']='10'
+        text=soup.prettify(formatter=lambda s: s.replace(u'\xa0', ' ')).replace('nowrap="nowrap"', 'width="450"')
+        text=text.replace('<html>','<html><head><style>span.diff_sub { background-color: red;}\nspan.diff_add {background-color:green;}\nspan.diff_chg {background-color:yellow}</style></head>')
+        with open(path+'/diff_'+str(version1)+'-'+str(version2)+'.html', 'w') as f:
+            f.write(text)
+        #webbrowser.open(url)
+        
+    return idiff
 
-	c.execute('SELECT `ID`,`Name`,`RockPfad` FROM `Uebersicht`')
-	table_rows = c.fetchall()
-	table_rows=list(table_rows)
-	for row in table_rows[1:]:
-		ID,name,pfad=row
-		print(wdh,name)
-		if wdh ==1:
-			c.execute('SELECT `ID` FROM `Vergleich` WHERE `ID`='+str(ID))
-			table_rows = c.fetchall()
-			table_rows=list(table_rows)
-			mybool=bool(table_rows)
-		else:
-			c.execute('SELECT `'+str(wdh)+'-'+str(wdh+1)+'` FROM `Vergleich` WHERE `ID`='+str(ID))
-			table_rows = c.fetchall()
-			table_rows=list(table_rows)
-			mybool=bool(table_rows[0][0])
-		if not mybool:
-			try:
-				f = open(pfad+'/'+str(wdh-1)+'_'+name)
-				sauce=f.read()
-				f.close()
-				soupe=BeautifulSoup(sauce, 'lxml')
-				body=soupe.body
-				stand=body.find('span', class_='stand').text
-				content=body.find(id='content')
-				section=content.find('div',class_='sectionZ')
-				ssection=section.find('div',class_='modParagraph')
-				textbausteine1=ssection.find_all('p',class_='text')
-				h2s1=content.find_all('h2', class_='subtitle')
-				head=soupe.head
-				browsertitle1=head.title.text
-				headline1=body.find('span', class_='headline').text
-				dachzeile1=body.find('span', class_='dachzeile').text	
-				stand1=body.find('span', class_='stand').text	
+def get_Textbausteine(path,name,version):
+    f=open(path+'/'+str(version)+'_'+name)
+    sauce=f.read()
+    f.close()
+    soupe=BeautifulSoup(sauce, 'lxml')
+    body=soupe.body
+    content=body.find(id='content')
+    contentlist=[]
+    h1=content.h1
+    contentlist.append(h1)
+    stand=content.find('span', class_='stand')
+    contentlist.append(stand)
 
-				for i in range(len(textbausteine1)):
-					if textbausteine1[i].find('a'):
-						if '#comment-' in textbausteine1[i].find('a')['href']:
-							del textbausteine1[i]
-
-
-				f = open(pfad+'/'+str(wdh)+'_'+name)
-				sauce=f.read()
-				f.close()
-				soupe=BeautifulSoup(sauce, 'lxml')
-				body=soupe.body
-				stand=body.find('span', class_='stand').text
-				content=body.find(id='content')
-				section=content.find('div',class_='sectionZ')
-				ssection=section.find('div',class_='modParagraph')
-				textbausteine2=ssection.find_all('p',class_='text')
-				h2s2=content.find_all('h2', class_='subtitle')
-				head=soupe.head
-				browsertitle2=head.title.text
-				headline2=body.find('span', class_='headline').text
-				dachzeile2=body.find('span', class_='dachzeile').text
-				stand2=body.find('span', class_='stand').text
-
-				for i in range(len(textbausteine2)):
-					if textbausteine2[i].find('a'):
-						if '#comment-' in textbausteine2[i].find('a')['href']:
-							del textbausteine2[i]
-
-				textbausteine1=[t.text for t in textbausteine1]+[h.text for h in h2s1]+[browsertitle1,headline1,dachzeile1,stand1]
-				textbausteine2=[t.text for t in textbausteine2]+[h.text for h in h2s2]+[browsertitle2,headline2,dachzeile2,stand2]
+    section=content.find('div',class_='sectionZ').find('div',class_='modParagraph')
+    for child in section.contents:
+        if 'class="text small' in str(child):
+            contentlist.append(child)
+        elif '<h2 class="subtitle' in str(child):
+            contentlist.append(child)
+        elif 'image">' in str(child):
+            image=child.find('img')
+            contentlist.append(image)
+            infotext=child.find('p', class_="infotext")
+            contentlist.append(infotext)
+    return contentlist
 
 
-				if 0:
-					html = difflib.HtmlDiff().make_table(fromlines=textbausteine1,tolines=textbausteine2)
-					path = os.path.abspath('temp.html')
-					url = 'file://' + path
+def sync_Uebersicht_und_Vergleich():
+    c=connection.cursor()
 
-					with open(path, 'w') as f:
-					    f.write(html)
-					webbrowser.open(url)
+    c.execute('SELECT `ID` FROM `Vergleich`')
+    table_rows = c.fetchall()
+    table_rows=list(table_rows)
+    all_ID_in_Vergleich=[]
+    for row in table_rows:
+        ID=row[0]
+        all_ID_in_Vergleich.append(ID)
+    all_ID_in_Vergleich=np.array(all_ID_in_Vergleich)
 
-				idiff=0
-				for d in difflib.context_diff(textbausteine1,textbausteine2,n=0):
-					print(d)
-					idiff+=1
+    c.execute('SELECT `ID`,`Name` FROM `Uebersicht`')
+    table_rows = c.fetchall()
+    table_rows=list(table_rows)
+    for row in table_rows:
+        ID, name=row
+        if ID not in all_ID_in_Vergleich:
+            print(name)
+            c.execute("INSERT INTO `Vergleich` (`ID`, `Name`) VALUES ('"+str(ID)+"', '"+name+"');")
+            connection.commit()
 
-			except:
-				idiff=999
-			print(idiff)
-			if wdh==1:
-				try:
-					c.execute("INSERT INTO `Vergleich` (`ID`, `Name`, `1-2`) VALUES ('"+str(ID)+"', '"+name+"', '"+str(idiff)+"');")
-					connection.commit()
-				except:
-					pass
-			else:
-				c.execute('UPDATE `Vergleich` SET `'+str(wdh)+'-'+str(wdh+1)+'` = '+str(idiff)+' WHERE `Vergleich`.`ID` = '+str(ID)+';')
+def Compare_all():
+    for i in range(7):
+        version1=i
+        version2=version1+1
+        vname=str(version2)
+        c=connection.cursor()
+        c.execute('SELECT ID FROM Vergleich WHERE `Vergleich`.`'+vname+'` IS NULL')
+        table_rows = c.fetchall()
+        table_rows=list(table_rows)
+
+        for row in table_rows:
+            ID=row[0]
+            c.execute('SELECT `Name`,`RockPfad` FROM `Uebersicht` WHERE `ID`='+str(ID))
+            table_rows = c.fetchall()
+            table_rows=list(table_rows)
+            name, path = table_rows[0]
+            if os.path.isfile(path+'/'+str(version1)+'_'+name) and os.path.isfile(path+'/'+str(version2)+'_'+name) :
+                try:
+                    idiff=Compare(path,name,version1,version2)
+                    if idiff:
+                        c.execute('UPDATE `Vergleich` SET `'+vname+'` = 888 WHERE `Vergleich`.`ID` = '+str(ID)+';')
+                    else:
+                        c.execute('UPDATE `Vergleich` SET `'+vname+'` = 0 WHERE `Vergleich`.`ID` = '+str(ID)+';')
+                except:
+                    c.execute('UPDATE `Vergleich` SET `'+vname+'` = 999 WHERE `Vergleich`.`ID` = '+str(ID)+';')
+                    print('error',name)
+                connection.commit()
+            else:
+                print('no file')
+
+
+
+sync_Uebersicht_und_Vergleich()
+Compare_all()
+
+
 

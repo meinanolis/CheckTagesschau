@@ -46,7 +46,7 @@ for row in table_rows:
         else:
             td_class='' 
         if (cell==888):
-            f.write('<td class="c'+str(i+1)+' '+td_class+'"><a href="file://blackrock/Tagesschau/'+path+'/diff_'+str(i)+'-'+str(i+1)+'.html">'+str(cell)+'</a></td>')
+            f.write('<td class="c'+str(i+1)+' '+td_class+'"><a href="file://blackrock/Tagesschau/'+path+'/diff_'+str(i)+'-'+str(i+1)+'.html" target="inhalt">'+str(cell)+'</a></td>')
         else:
             f.write('<td class="c'+str(i+1)+' '+td_class+'">'+str(cell)+'</td>')
     f.write('</tr>')

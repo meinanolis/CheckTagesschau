@@ -27,10 +27,13 @@ def bin_vec_to_dict(bin_vec_int):
         else:
             d[k]=0
     return d
-    
+
+
+#------------TODO    
 def write_bin_vec_to_db(ID, bin_vec_int):
     return None
 
+#------------TODO  
 def read_data_from_db(ID):
     data_dict = {
         'ID': ID,
@@ -39,15 +42,31 @@ def read_data_from_db(ID):
         'Date': 'date',
         'bin_vec_int': 111
     }
+    if data_dict['bin_vec_int'] == 888:
+        data_dict['bin_vec_int'] = 0
     return data_dict
 
+#------------TODO  
+def get_random_888():
+    ID=111
+    return ID
+
+
+#------------TODO  kann das framing ding werden
 @app.route("/")
 def hello():
     return "Hello World!"
 
 @app.route("/id/<int:ID>/")
 def outer_frame(ID):
-    
+    data_dict = read_data_from_db(ID)
+    d = bin_vec_to_dict(data_dict['bin_vec_int'])
+    print(data_dict)
+    return render_template('outer_frame.html',data_dict=data_dict, d=d)
+
+@app.route("/next/")
+def outer_frame_next():
+    ID = get_random_888()
     data_dict = read_data_from_db(ID)
     d = bin_vec_to_dict(data_dict['bin_vec_int'])
     print(data_dict)

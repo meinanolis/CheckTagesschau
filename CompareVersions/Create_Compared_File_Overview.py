@@ -51,3 +51,4 @@ for row in table_rows:
             f.write('<td class="c'+str(i+1)+' '+td_class+'">'+str(cell)+'</td>')
     f.write('</tr>')
 f.write('</table></body></html>')
+f.close()

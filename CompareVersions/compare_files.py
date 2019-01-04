@@ -7,6 +7,8 @@ import numpy as np
 import webbrowser
 import os.path
 
+#wdir muss geändert werden
+
 connection = MySQLdb.connect(
      host="192.168.2.3",
      port=3307,

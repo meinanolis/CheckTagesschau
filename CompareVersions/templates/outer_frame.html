@@ -1,0 +1,69 @@
+<html>
+    <body>
+        <table>
+            <tr>
+                <td>
+                    name: {{data_dict['Name']}} ({{data_dict['ID']}})
+                </td>
+                <td>
+                    date: {{data_dict['Date']}}
+                </td>
+            </tr>
+            <form action="http://localhost:5000/result" method="POST">
+                <tr>
+                    <td>
+                        <ul>
+                            <li>
+                                <input type="checkbox" name="Stand" value="1" id="check1"{% if d['Stand'] %} checked="checked" {%endif%}>
+                                <label for="check5">Stand</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" name="Rechtschreibfehler" value="1" id="check2"{% if d['Rechtschreibfehler'] %} checked="checked" {%endif%}>
+                                <label for="check6">Rechtschreibfehler</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" name="Hinzugefuegt" value="1" id="check3" checked="checked"{% if d['Hinzugefuegt'] %} checked="checked" {%endif%}>
+                                <label for="check5">Hinzugefügt</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" name="Entfernt" value="1" id="check4"{% if d['Entfernt'] %} checked="checked" {%endif%}>
+                                <label for="check6">Entfernt</label>
+                            </li>
+                        </ul>
+                    </td>
+                    <td>
+                        <ul>
+                            <li>
+                                <input type="checkbox" name="Aenderung30" value="1" id="check5"{% if d['Aenderung30'] %} checked="checked" {%endif%}>
+                                <label for="check5">Änderung 30%</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" name="Aenderung50" value="1" id="check6"{% if d['Aenderung50'] %} checked="checked" {%endif%}>
+                                <label for="check6">Änderung 50%</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" name="Favorit" value="1" id="check7"{% if d['Favorit'] %} checked="checked" {%endif%}>
+                                <label for="check5">Favorit</label>
+                            </li>
+                            <li>
+                                <input type="checkbox" name="Error" value="1" id="check8"{% if d['Error'] %} checked="checked" {%endif%}>
+                                <label for="check6">Error</label>
+                            </li>
+                        </ul>
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="2">
+                        <input type="hidden" name="ID" value="{{data_dict['ID']}}"><input type="submit" value="submit" />
+                    </td>
+                </tr>
+                
+            </form>
+            <tr>
+                <td colspan="2">
+                    iframe with path: {{data_dict['Path']}}
+                </td>
+            </tr>
+        </table>
+    </body>
+</html>

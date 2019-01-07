@@ -106,6 +106,7 @@ app = Flask(__name__)
 #------------TODO  
 @app.route("/")
 def index():
+    global menu
     data = dataa()
     menu = menuu()
     if not menu.lines:
@@ -121,9 +122,9 @@ def index():
 
 @app.route("/id/<int:ID>/<int:VERSION>/")
 def outer_frame(ID,VERSION):
-    data = data(ID,VERSION)
-    
-    return render_template('outer_frame.html',data_dict=data_dict, d=d)
+    global menu
+    data = dataa(ID,VERSION)
+    return render_template('index.html',menu=menu,data=data)
 
 @app.route("/next/")
 def outer_frame_next():

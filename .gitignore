@@ -6,3 +6,9 @@ list_of*.xlsx
 !Compared_File_Overview.html
 !CompareVersions/index.html
 !outer_frame.html
+#/2017*/
+#/2018*/
+#/2019*/
+
+!/2018-10/khashoggi-177.html/*
+!/2018-10/khashoggi-177.html/diff_0-1.html

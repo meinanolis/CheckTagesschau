@@ -4,7 +4,7 @@ Thumbs.db
 Artikelanzahl.*
 list_of*.xlsx
 !Compared_File_Overview.html
-!CompareVersions/index.html
+!CompareVersions/templates/index.html
 !outer_frame.html
 !nav.html
 !framing.html

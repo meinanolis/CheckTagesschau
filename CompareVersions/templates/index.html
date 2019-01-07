@@ -1,0 +1,106 @@
+<html>
+  <head>
+    <style>
+      table {
+        width: 100%;
+      }
+      #menu {
+        width: 600px;
+      }
+    </style>
+  </head>
+  <body>
+    <table border="1">
+      <tr>
+        <td rowspan="2" id="menu">
+            <div>
+                <table border=1>
+                    {% for l in menu.lines %}
+                    <tr class="uncorr" id="{{l['ID']}}">
+                        <td class="index">{{l['ID']}}</td>
+                        <td class="name">{{l['Name']}}</td>
+                        <td class="c1 uncorr">{% if l['c1'] %} <a href="/id/{{l['ID']}}/1" target="_blank">{{l['c1']}}</a> {% else %} {{l['c1']}} {% endif %}</td>
+                        <td class="c2 uncorr">{% if l['c2'] %} <a href="/id/{{l['ID']}}/2" target="inhalt">{{l['c2']}}</a> {% else %} {{l['c2']}} {% endif %}</td>
+                        <td class="c3 uncorr">{% if l['c3'] %} <a href="/id/{{l['ID']}}/3" target="inhalt">{{l['c3']}}</a> {% else %} {{l['c3']}} {% endif %}</td>
+                        <td class="c4 uncorr">{% if l['c4'] %} <a href="/id/{{l['ID']}}/4" target="inhalt">{{l['c4']}}</a> {% else %} {{l['c4']}} {% endif %}</td>
+                        <td class="c5 uncorr">{% if l['c5'] %} <a href="/id/{{l['ID']}}/5" target="inhalt">{{l['c5']}}</a> {% else %} {{l['c5']}} {% endif %}</td>
+                        <td class="c6 uncorr">{% if l['c6'] %} <a href="/id/{{l['ID']}}/6" target="inhalt">{{l['c6']}}</a> {% else %} {{l['c6']}} {% endif %}</td>
+                    </tr>
+                    {% endfor %}
+                </table>
+            </div>
+        </td>
+        <td>
+            <table>
+                <tr>
+                    <td>
+                        name: {{data.name}} ({{data.ID}})<br>
+                        version: {{data.VERSION}}
+                    </td>
+                    <td>
+                        date: {{data.date}}
+                    </td>
+                </tr>
+                <form action="http://localhost:5000/result" method="POST">
+                    <tr>
+                        <td>
+                            <ul>
+                                <li>
+                                    <input type="checkbox" name="Stand" value="1" id="check1"{% if data.d['Stand'] %} checked="checked" {%endif%}>
+                                    <label for="check5">Stand</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" name="Rechtschreibfehler" value="1" id="check2"{% if data.d['Rechtschreibfehler'] %} checked="checked" {%endif%}>
+                                    <label for="check6">Rechtschreibfehler</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" name="Hinzugefuegt" value="1" id="check3" {% if data.d['Hinzugefuegt'] %} checked="checked" {%endif%}>
+                                    <label for="check5">Hinzugefügt</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" name="Entfernt" value="1" id="check4"{% if data.d['Entfernt'] %} checked="checked" {%endif%}>
+                                    <label for="check6">Entfernt</label>
+                                </li>
+                            </ul>
+                        </td>
+                        <td>
+                            <ul>
+                                <li>
+                                    <input type="checkbox" name="Aenderung30" value="1" id="check5"{% if data.d['Aenderung30'] %} checked="checked" {%endif%}>
+                                    <label for="check5">Änderung 30%</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" name="Aenderung50" value="1" id="check6"{% if data.d['Aenderung50'] %} checked="checked" {%endif%}>
+                                    <label for="check6">Änderung 50%</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" name="Favorit" value="1" id="check7"{% if data.d['Favorit'] %} checked="checked" {%endif%}>
+                                    <label for="check5">Favorit</label>
+                                </li>
+                                <li>
+                                    <input type="checkbox" name="Error" value="1" id="check8"{% if data.d['Error'] %} checked="checked" {%endif%}>
+                                    <label for="check6">Error</label>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="2">
+                            <input type="hidden" name="ID" value="{{data.ID}}"><input type="hidden" name="VERSION" value="{{data.VERSION}}"><input type="submit" value="submit" />
+                        </td>
+                    </tr>
+                    
+                </form>
+            </table>
+        </td>
+      </tr>
+      <tr>
+        <td>
+            <div>
+                bla
+            </div>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>

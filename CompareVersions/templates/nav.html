@@ -1,0 +1,40 @@
+<html>
+    <head>
+        <style>
+            
+
+            td.error {
+                background-color: black;
+                color: white
+            }
+
+            td.corr {
+                background-color: red;
+                color: black
+            }
+
+            td.uncorr {
+                background-color: lightgreen;
+                color: black
+            }
+        </style>
+    </head>
+    <body>
+        <div>
+            <table border=1>
+                {% for l in lines %}
+                <tr class="uncorr" id="{{l['ID']}}">
+                    <td class="index">{{l['ID']}}</td>
+                    <td class="name">{{l['Name']}}</td>
+                    <td class="c1 uncorr">{% if l['c1'] %} <a href="/id/{{l['ID']}}/1" target="inhalt">{{l['c1']}}</a> {% else %} {{l['c1']}} {% endif %}</td>
+                    <td class="c2 uncorr">{% if l['c2'] %} <a href="/id/{{l['ID']}}/2" target="inhalt">{{l['c2']}}</a> {% else %} {{l['c2']}} {% endif %}</td>
+                    <td class="c3 uncorr">{% if l['c3'] %} <a href="/id/{{l['ID']}}/3" target="inhalt">{{l['c3']}}</a> {% else %} {{l['c3']}} {% endif %}</td>
+                    <td class="c4 uncorr">{% if l['c4'] %} <a href="/id/{{l['ID']}}/4" target="inhalt">{{l['c4']}}</a> {% else %} {{l['c4']}} {% endif %}</td>
+                    <td class="c5 uncorr">{% if l['c5'] %} <a href="/id/{{l['ID']}}/5" target="inhalt">{{l['c5']}}</a> {% else %} {{l['c5']}} {% endif %}</td>
+                    <td class="c6 uncorr">{% if l['c6'] %} <a href="/id/{{l['ID']}}/6" target="inhalt">{{l['c6']}}</a> {% else %} {{l['c6']}} {% endif %}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </body>
+</html>

@@ -55,7 +55,7 @@ def bin_vec_to_dict(bin_vec_int):
             d[k]=0
     return d
 
-    
+
 #-----------------TODO
 def addHTML(data_dict): 
     data_dict['HTML']='bla'
@@ -97,6 +97,18 @@ def get_random_888():
 @app.route("/")
 def hello():
     return "Hello World!"
+
+@app.route("/nav")
+def outer_frame():
+    nitems=request.args.get('nitems')
+    #--------TODO
+    lines=[{'ID':111, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
+        {'ID':112, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
+        {'ID':113, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
+        {'ID':114, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
+        {'ID':115, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
+    ]
+    return render_template('nav.html',lines=lines)
 
 @app.route("/id/<int:ID>/<int:VERSION>/")
 def outer_frame(ID,VERSION):

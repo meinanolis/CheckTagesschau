@@ -1,4 +1,8 @@
 *.html
 log.txt
+Thumbs.db
+Artikelanzahl.*
+list_of*.xlsx
 !Compared_File_Overview.html
-!index.html
+!CompareVersions/index.html
+!outer_frame.html

@@ -3,7 +3,8 @@
         <table>
             <tr>
                 <td>
-                    name: {{data_dict['Name']}} ({{data_dict['ID']}})
+                    name: {{data_dict['Name']}} ({{data_dict['ID']}})<br>
+                    version: {{data_dict['VERSION']}}
                 </td>
                 <td>
                     date: {{data_dict['Date']}}
@@ -22,7 +23,7 @@
                                 <label for="check6">Rechtschreibfehler</label>
                             </li>
                             <li>
-                                <input type="checkbox" name="Hinzugefuegt" value="1" id="check3" checked="checked"{% if d['Hinzugefuegt'] %} checked="checked" {%endif%}>
+                                <input type="checkbox" name="Hinzugefuegt" value="1" id="check3" {% if d['Hinzugefuegt'] %} checked="checked" {%endif%}>
                                 <label for="check5">Hinzugefügt</label>
                             </li>
                             <li>
@@ -54,7 +55,7 @@
                 </tr>
                 <tr>
                     <td colspan="2">
-                        <input type="hidden" name="ID" value="{{data_dict['ID']}}"><input type="submit" value="submit" />
+                        <input type="hidden" name="ID" value="{{data_dict['ID']}}"><input type="hidden" name="VERSION" value="{{data_dict['VERSION']}}"><input type="submit" value="submit" />
                     </td>
                 </tr>
                 

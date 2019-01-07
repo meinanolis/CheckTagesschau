@@ -55,14 +55,18 @@ def bin_vec_to_dict(bin_vec_int):
             d[k]=0
     return d
 
-
-#------------TODO    
+    
+#-----------------TODO
+def addHTML(data_dict): 
+    data_dict['HTML']='bla'
+    return data_dict
+   
 def write_bin_vec_to_db(ID, VERSION, bin_vec_int):
     datenbankupdate('UPDATE `Vergleich` SET `'+VERSION+'` = '+str(bin_vec_int)+' WHERE `Vergleich`.`ID` = '+str(ID))
     print('UPDATE `Vergleich` SET `'+VERSION+'` = '+str(bin_vec_int)+' WHERE `Vergleich`.`ID` = '+str(ID))
     return None
 
-#------------TODO  
+
 def read_data_from_db(ID, VERSION):
     row=datenbankabfrage('SELECT `Name`,`RockPfad`, `Date` FROM `Uebersicht` WHERE `ID`='+str(ID))
     name,path,date=row[0]
@@ -100,6 +104,7 @@ def outer_frame(ID,VERSION):
     if data_dict['bin_vec_int'] == 888:
         data_dict['bin_vec_int']=0
     d = bin_vec_to_dict(data_dict['bin_vec_int'])
+    data_dict=addHTML(data_dict)
     print(data_dict)
     return render_template('outer_frame.html',data_dict=data_dict, d=d)
 
@@ -110,6 +115,7 @@ def outer_frame_next():
     if data_dict['bin_vec_int'] == 888:
         data_dict['bin_vec_int']=0
     d = bin_vec_to_dict(data_dict['bin_vec_int'])
+    data_dict=addHTML(data_dict)
     print(data_dict)
     return render_template('outer_frame.html',data_dict=data_dict, d=d)
 

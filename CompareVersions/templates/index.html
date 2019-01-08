@@ -7,6 +7,9 @@
       #menu {
         width: 600px;
       }
+      span.diff_sub { background-color: red;}
+      span.diff_add {background-color:green;}
+      span.diff_chg {background-color:yellow}
     </style>
   </head>
   <body>
@@ -47,39 +50,39 @@
                             <ul>
                                 <li>
                                     <input type="checkbox" name="Stand" value="1" id="check1"{% if data.d['Stand'] %} checked="checked" {%endif%}>
-                                    <label for="check5">Stand</label>
+                                    <label for="check1">Stand</label>
                                 </li>
                                 <li>
                                     <input type="checkbox" name="Rechtschreibfehler" value="1" id="check2"{% if data.d['Rechtschreibfehler'] %} checked="checked" {%endif%}>
-                                    <label for="check6">Rechtschreibfehler</label>
+                                    <label for="check2">Rechtschreibfehler</label>
                                 </li>
                                 <li>
                                     <input type="checkbox" name="Hinzugefuegt" value="1" id="check3" {% if data.d['Hinzugefuegt'] %} checked="checked" {%endif%}>
-                                    <label for="check5">Hinzugefügt</label>
+                                    <label for="check3">Hinzugefügt</label>
                                 </li>
                                 <li>
                                     <input type="checkbox" name="Entfernt" value="1" id="check4"{% if data.d['Entfernt'] %} checked="checked" {%endif%}>
-                                    <label for="check6">Entfernt</label>
+                                    <label for="check4">Entfernt</label>
                                 </li>
                             </ul>
                         </td>
                         <td>
                             <ul>
                                 <li>
-                                    <input type="checkbox" name="Aenderung30" value="1" id="check5"{% if data.d['Aenderung30'] %} checked="checked" {%endif%}>
-                                    <label for="check5">Änderung 30%</label>
+                                    <input type="checkbox" name="Aenderung5" value="1" id="check5"{% if data.d['Aenderung5'] %} checked="checked" {%endif%}>
+                                    <label for="check5">Änderung 5%</label>
                                 </li>
                                 <li>
-                                    <input type="checkbox" name="Aenderung50" value="1" id="check6"{% if data.d['Aenderung50'] %} checked="checked" {%endif%}>
-                                    <label for="check6">Änderung 50%</label>
+                                    <input type="checkbox" name="Aenderung30" value="1" id="check6"{% if data.d['Aenderung30'] %} checked="checked" {%endif%}>
+                                    <label for="check6">Änderung 30%</label>
                                 </li>
                                 <li>
                                     <input type="checkbox" name="Favorit" value="1" id="check7"{% if data.d['Favorit'] %} checked="checked" {%endif%}>
-                                    <label for="check5">Favorit</label>
+                                    <label for="check7">Favorit</label>
                                 </li>
                                 <li>
                                     <input type="checkbox" name="Error" value="1" id="check8"{% if data.d['Error'] %} checked="checked" {%endif%}>
-                                    <label for="check6">Error</label>
+                                    <label for="check8">Error</label>
                                 </li>
                             </ul>
                         </td>
@@ -97,7 +100,7 @@
       <tr>
         <td>
             <div>
-                bla
+                {{data.HTML|safe}}
             </div>
         </td>
       </tr>

@@ -1,5 +1,6 @@
 from flask import Flask, flash, redirect, render_template, request, session, abort
 import MySQLdb
+from bs4 import BeautifulSoup
 
 
 
@@ -11,12 +12,25 @@ class menuu:
         self.lines = None
     
     def get_lines(self):
-        self.lines=[{'ID':57, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
-                {'ID':59, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
-                {'ID':113, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
-                {'ID':114, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
-                {'ID':115, 'Name':'name','c1':0,'c2':123,'c3':0,'c4':0,'c5':0,'c6':0},
-            ]
+        global data
+        s='SELECT `ID`,`Name`,`1`,`2`,`3`,`4`,`5`,`6` FROM `Vergleich` WHERE `1`=888 OR `2`=888 OR `3`=888 OR `4`=888 OR `5`=888 OR `6`=888 ORDER BY `ID` ASC Limit 50' 
+        tablerows=data.datenbankabfrage(s)
+        #print(tablerows)
+        self.lines=[]
+        for r in tablerows:
+            ID,name,c1,c2,c3,c4,c5,c6 = r
+            dic={
+                'ID':ID, 
+                'Name':name,
+                'c1':c1,
+                'c2':c2,
+                'c3':c3,
+                'c4':c4,
+                'c5':c5,
+                'c6':c6
+            }
+            self.lines.append(dic)
+        
 
 class dataa:
     bin_dict={
@@ -24,8 +38,8 @@ class dataa:
         'Rechtschreibfehler':   2,
         'Hinzugefuegt':         4,
         'Entfernt':             8,
-        'Aenderung30':          16,
-        'Aenderung50':          32,
+        'Aenderung5':           16,
+        'Aenderung30':          32,
         'Favorit':              64,
         'Error':                128
         }
@@ -36,11 +50,12 @@ class dataa:
         user="Tagesschau", passwd="g00gle"
         )
 
-    def __init__(self,ID=5,VERSION=5):
+    def __init__(self,ID=59,VERSION=1):
         self.ID = ID
         self.VERSION = VERSION
-        self.read_data_from_db() #name path date bin_vec_int
-        self.bin_vec_to_dict() #d
+        self.read_data_from_db() #.name .path .date .bin_vec_int
+        self.bin_vec_to_dict() #.d
+        self.addHTML() #.HTML
 
     def datenbankabfrage(self,s):
         self.c=self.connection.cursor()
@@ -59,7 +74,6 @@ class dataa:
         for k in form_dict:
             if not (k=='ID' or k=='VERSION'):
                 self.bin_vec_int+=self.bin_dict[k]
-        return self.bin_vec_int
 
     def bin_vec_to_dict(self):
         if self.bin_vec_int == 888:
@@ -78,16 +92,17 @@ class dataa:
         row=self.datenbankabfrage('SELECT `'+str(self.VERSION)+'` FROM Vergleich WHERE `ID`='+str(self.ID))
         self.bin_vec_int =int (row[0][0])
 
-
-#-----------------TODO
-def addHTML(data_dict): 
-    data_dict['HTML']='bla'
-    return data_dict
-   
-def write_bin_vec_to_db(ID, VERSION, bin_vec_int):
-    self.datenbankupdate('UPDATE `Vergleich` SET `'+VERSION+'` = '+str(bin_vec_int)+' WHERE `Vergleich`.`ID` = '+str(ID))
-    print('UPDATE `Vergleich` SET `'+VERSION+'` = '+str(bin_vec_int)+' WHERE `Vergleich`.`ID` = '+str(ID))
-    return None
+    def addHTML(self): 
+        f=open(self.path+'/diff_'+str(self.VERSION-1)+'-'+str(self.VERSION)+'.html')
+        sauce=f.read()
+        f.close()
+        soupe=BeautifulSoup(sauce, 'lxml')
+        body=soupe.body
+        self.HTML=str(body.table.prettify())
+    
+    def write_bin_vec_to_db(self):
+        self.datenbankupdate('UPDATE `Vergleich` SET `'+self.VERSION+'` = '+str(self.bin_vec_int)+' WHERE `Vergleich`.`ID` = '+str(self.ID))
+        #print('UPDATE `Vergleich` SET `'+VERSION+'` = '+str(bin_vec_int)+' WHERE `Vergleich`.`ID` = '+str(ID))
 
 
 
@@ -106,14 +121,14 @@ app = Flask(__name__)
 #------------TODO  
 @app.route("/")
 def index():
-    global menu
+    global menu, data
     data = dataa()
     menu = menuu()
     if not menu.lines:
         menu.get_lines()
     return render_template('index.html',menu=menu,data=data)
 
-@app.route("/nav")
+#@app.route("/nav")
 #def nav():
 #    nitems=request.args.get('nitems')
 #    #--------TODO
@@ -122,30 +137,31 @@ def index():
 
 @app.route("/id/<int:ID>/<int:VERSION>/")
 def outer_frame(ID,VERSION):
-    global menu
+    global menu, data
     data = dataa(ID,VERSION)
     return render_template('index.html',menu=menu,data=data)
 
-@app.route("/next/")
-def outer_frame_next():
-    ID, VERSION = get_random_888()
-    data_dict = read_data_from_db(ID, VERSION)
-    if data_dict['bin_vec_int'] == 888:
-        data_dict['bin_vec_int']=0
-    d = bin_vec_to_dict(data_dict['bin_vec_int'])
-    data_dict=addHTML(data_dict)
-    print(data_dict)
-    return render_template('outer_frame.html',data_dict=data_dict, d=d)
+#@app.route("/next/")
+#def outer_frame_next():
+#    ID, VERSION = get_random_888()
+#    data_dict = read_data_from_db(ID, VERSION)
+#    if data_dict['bin_vec_int'] == 888:
+#        data_dict['bin_vec_int']=0
+#    d = bin_vec_to_dict(data_dict['bin_vec_int'])
+#    data_dict=addHTML(data_dict)
+#    print(data_dict)
+#    return render_template('outer_frame.html',data_dict=data_dict, d=d)
 
 @app.route('/result',methods = ['POST', 'GET'])
 def result():
+    global menu, data
     if request.method == 'POST':
         result = request.form
-        ID = result['ID']
-        VERSION = result['VERSION']
-        bin_vec_int = dict_to_bin_vec(result)
-        write_bin_vec_to_db(ID, VERSION, bin_vec_int)
-    return 'ok, ID: '+str(ID)+', Version: '+str(VERSION)+', Bin_Vec '+str(bin_vec_int)
+        data.ID = result['ID']
+        data.VERSION = result['VERSION']
+        data.dict_to_bin_vec(result)
+        data.write_bin_vec_to_db()
+    return index()
 
 
 
